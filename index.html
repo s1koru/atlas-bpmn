@@ -283,34 +283,25 @@
 
 </div>
 
+
+<!-- Замени весь блок <script>...</script> в конце файла на это: -->
 <script>
-// Load uploaded images from window.fs
-const imageMap = [
-  { id: 'img1c',      file: 'image_1.png'  },
-  { id: 'imgPyrus',   file: 'image_2.png'  },
-  { id: 'imgBot',     file: 'image_3.png'  },
-  { id: 'imgAsterisk',file: 'image_4.png'  },
-  { id: 'imgTg',      file: 'image_5.png'  },
-  { id: 'imgWa',      file: 'image_6.png'  },
-  { id: 'imgMax',     file: 'image_7.png'  },
-  { id: 'imgTL',      file: 'image_8.png'  },
-];
+  // Маппинг id элемента -> имя файла в репозитории
+  const imageMap = [
+    { id: 'img1c',       src: 'preview.png'      },
+    { id: 'imgPyrus',    src: 'preview (1).png'  },
+    { id: 'imgBot',      src: 'preview (2).png'  },
+    { id: 'imgAsterisk', src: 'preview (3).png'  },
+    { id: 'imgTg',       src: 'preview (4).png'  },
+    { id: 'imgWa',       src: 'preview (5).png'  },
+    { id: 'imgMax',      src: 'preview (6).png'  },
+    { id: 'imgTL',       src: 'preview (7).png'  },
+  ];
 
-async function loadImages() {
-  for (const { id, file } of imageMap) {
-    try {
-      const data = await window.fs.readFile(file);
-      const blob = new Blob([data]);
-      const url = URL.createObjectURL(blob);
-      const el = document.getElementById(id);
-      if (el) el.src = url;
-    } catch(e) {
-      console.warn('Could not load', file, e);
-    }
+  for (const { id, src } of imageMap) {
+    const el = document.getElementById(id);
+    if (el) el.src = src;
   }
-}
-
-loadImages();
 </script>
 </body>
 </html>

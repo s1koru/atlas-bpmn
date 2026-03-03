@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPMN Process Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+  .diagram-wrap {
+    width: 960px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 36px 40px 40px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 { text-align:center; color:#fff; font-size:22px; font-weight:700; letter-spacing:1px; margin-bottom:6px; }
+  .subtitle { text-align:center; color:rgba(255,255,255,0.4); font-size:13px; margin-bottom:36px; }
+
+  .node-box {
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    border: 1.5px solid transparent;
+    transition: transform .2s;
+    cursor: default;
+    width: 100%;
+  }
+  .node-box:hover { transform: translateY(-3px); }
+  .node-box .logo-img {
+    width: 44px; height: 44px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  .node-box .logo-img.rounded { border-radius: 50%; }
+  .node-box .logo { font-size: 28px; line-height: 1; }
+  .node-box .node-title { font-size: 12px; font-weight: 700; color: #fff; }
+  .node-box .node-sub { font-size: 10px; color: rgba(255,255,255,0.5); line-height: 1.4; }
+
+  .box-1c       { background:linear-gradient(135deg,#e8410020,#ff6b0030); border-color:#ff6b00aa; box-shadow:0 0 20px #ff6b0033; }
+  .box-pyrus    { background:linear-gradient(135deg,#f5a62320,#fbbf2430); border-color:#f5a623aa; box-shadow:0 0 20px #f5a62333; }
+  .box-bot      { background:linear-gradient(135deg,#2196f320,#42a5f530); border-color:#2196f3aa; box-shadow:0 0 16px #2196f333; }
+  .box-asterisk { background:linear-gradient(135deg,#f5820020,#ff9a3c30); border-color:#f58200aa; box-shadow:0 0 16px #f5820033; }
+  .box-msg      { background:linear-gradient(135deg,#25D36620,#128C7E30); border-color:#25D366aa; box-shadow:0 0 16px #25D36633; }
+  .box-email    { background:linear-gradient(135deg,#EA435020,#EA435030); border-color:#EA4350aa; box-shadow:0 0 16px #EA435033; }
+  .box-legal    { background:linear-gradient(135deg,#37474f20,#546e7a30); border-color:#546e7aaa; box-shadow:0 0 16px #546e7a33; }
+  .box-kadarb   { background:linear-gradient(135deg,#5b21b625,#9333ea35); border-color:#9333eaaa; box-shadow:0 0 16px #9333ea33; }
+  .box-chatbot  { background:linear-gradient(135deg,#f59e0b20,#fbbf2430); border-color:#f59e0baa; box-shadow:0 0 16px #f59e0b33; }
+  .box-call     { background:linear-gradient(135deg,#ec489920,#f472b630); border-color:#ec4899aa; box-shadow:0 0 16px #ec489933; }
+
+  .v-arrow {
+    width:2px; height:36px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.5),rgba(255,255,255,0.2));
+    position:relative; flex-shrink:0;
+  }
+  .v-arrow::after {
+    content:''; position:absolute; bottom:-1px; left:-4px;
+    border:5px solid transparent; border-top:8px solid rgba(255,255,255,0.5);
+  }
+
+  .fan-svg { width:100%; height:44px; overflow:visible; display:block; }
+
+  .output-row {
+    width:100%;
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .out-col { display:flex; flex-direction:column; align-items:center; }
+
+  .icon-row { display:flex; gap:4px; justify-content:center; align-items:center; }
+  .icon-row img { width:22px; height:22px; object-fit:contain; border-radius:4px; }
+
+  .badge-row { display:flex; gap:4px; justify-content:center; margin-top:2px; flex-wrap:wrap; }
+  .badge { font-size:9px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.08); border-radius:6px; padding:2px 6px; white-space:nowrap; }
+
+  /* 230-ФЗ */
+  .fz-section {
+    width:100%; margin-top:28px;
+    background:linear-gradient(90deg,rgba(6,182,212,0.08),rgba(6,182,212,0.04));
+    border:1.5px dashed rgba(6,182,212,0.45);
+    border-radius:18px; padding:18px 24px;
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  .fz-label { writing-mode:vertical-lr; transform:rotate(180deg); font-size:10px; font-weight:700; letter-spacing:1.5px; color:rgba(6,182,212,0.6); text-transform:uppercase; padding:0 4px; }
+  .fz-left { display:flex; flex-direction:column; align-items:center; gap:6px; min-width:120px; }
+  .fz-title { font-size:12px; font-weight:700; color:#22d3ee; text-align:center; }
+  .fz-sub { font-size:10px; color:rgba(34,211,238,0.6); text-align:center; }
+  .fz-note { font-size:10px; color:rgba(6,182,212,0.55); border-left:2px solid rgba(6,182,212,0.3); padding-left:10px; line-height:1.6; }
+  .fz-tags { display:flex; flex-wrap:wrap; gap:8px; flex:1; }
+  .fz-tag { background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.4); border-radius:20px; padding:5px 12px; font-size:10.5px; color:#67e8f9; white-space:nowrap; }
+
+  .legend { display:flex; gap:16px; margin-top:28px; flex-wrap:wrap; justify-content:center; }
+  .legend-item { display:flex; align-items:center; gap:6px; color:rgba(255,255,255,0.5); font-size:11px; }
+  .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+  /* transfer label */
+  .transfer-label {
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:12px;
+    padding:8px 18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .transfer-label img { width:32px; height:32px; object-fit:contain; border-radius:6px; }
+  .transfer-label span { font-size:11px; color:rgba(255,255,255,0.7); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="diagram-wrap">
+
+  <h1>🔄 Архитектура процессов автоматизации</h1>
+  <p class="subtitle">Схема интеграций и потоков данных</p>
+
+  <!-- 1С — сразу без старта -->
+  <div class="node-box box-1c" style="width:auto;min-width:160px;padding:14px 32px;">
+    <img id="img1c" class="logo-img" src="" alt="1С"/>
+    <div class="node-title">1С</div>
+    <div class="node-sub">Хранилище данных</div>
+  </div>
+
+  <div class="v-arrow"></div>
+
+  <!-- Бот для переноса данных -->
+  <div class="transfer-label">
+    <img id="imgBot" src="" alt="Бот"/>
+    <span>Бот для переноса данных</span>
+  </div>
+
+  <div class="v-arrow"></div>
+
+  <!-- Pyrus -->
+  <div class="node-box box-pyrus" style="width:auto;min-width:160px;padding:14px 32px;">
+    <img id="imgPyrus" class="logo-img" src="" alt="Pyrus"/>
+    <div class="node-title">Pyrus</div>
+    <div class="node-sub">BPM-платформа · Центр маршрутизации</div>
+  </div>
+
+  <!-- FAN SVG -->
+  <svg class="fan-svg" viewBox="0 0 940 44" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L6,3 z" fill="rgba(255,255,255,0.45)"/>
+      </marker>
+    </defs>
+    <line x1="470" y1="0" x2="470" y2="10" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+    <line x1="67" y1="10" x2="873" y2="10" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+    <line x1="67"  y1="10" x2="67"  y2="40" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="201" y1="10" x2="201" y2="40" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="335" y1="10" x2="335" y2="40" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="470" y1="10" x2="470" y2="40" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="604" y1="10" x2="604" y2="40" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="738" y1="10" x2="738" y2="40" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="873" y1="10" x2="873" y2="40" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#arr)"/>
+  </svg>
+
+  <div class="output-row">
+
+    <!-- Asterisk -->
+    <div class="out-col">
+      <div class="node-box box-asterisk">
+        <img id="imgAsterisk" class="logo-img" src="" alt="Asterisk"/>
+        <div class="node-title">Asterisk</div>
+        <div class="node-sub">IP-телефония</div>
+      </div>
+    </div>
+
+    <!-- Мессенджеры -->
+    <div class="out-col">
+      <div class="node-box box-msg">
+        <div class="icon-row">
+          <img id="imgWa" src="" alt="WhatsApp"/>
+          <img id="imgTg" src="" alt="Telegram"/>
+          <img id="imgMax" src="" alt="Max"/>
+        </div>
+        <div class="node-title">Мессенджеры</div>
+        <div class="node-sub">WhatsApp · Telegram · Max</div>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="out-col">
+      <div class="node-box box-email">
+        <div class="logo">📧</div>
+        <div class="node-title">Email</div>
+        <div class="node-sub">Почтовые рассылки</div>
+      </div>
+    </div>
+
+    <!-- ТехЛегал -->
+    <div class="out-col">
+      <div class="node-box box-legal">
+        <img id="imgTL" class="logo-img" src="" alt="TechLegal" style="background:#fff;padding:2px;border-radius:6px;"/>
+        <div class="node-title">ТехЛегал</div>
+        <div class="node-sub">Правовой мониторинг</div>
+      </div>
+    </div>
+
+    <!-- КадАрбитр + Федресурс -->
+    <div class="out-col">
+      <div class="node-box box-kadarb">
+        <div class="icon-row" style="font-size:22px;gap:6px;"><span>🏛️</span><span>🗂️</span></div>
+        <div class="node-title">КадАрбитр · Федресурс</div>
+        <div class="badge-row">
+          <span class="badge">Статус банкротства</span>
+          <span class="badge">Стадии дела</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Чат-боты -->
+    <div class="out-col">
+      <div class="node-box box-chatbot">
+        <div class="logo">🤖</div>
+        <div class="node-title">Чат-боты</div>
+        <div class="node-sub">Сценарии / авто-ответы</div>
+      </div>
+    </div>
+
+    <!-- АвтоОбзвон -->
+    <div class="out-col">
+      <div class="node-box box-call">
+        <div class="logo">📞</div>
+        <div class="node-title">АвтоОбзвон</div>
+        <div class="node-sub">Голосовые рассылки</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 230-ФЗ -->
+  <div class="fz-section">
+    <div class="fz-label">230-ФЗ</div>
+    <div class="fz-left">
+      <div style="font-size:28px;">🛡️</div>
+      <div class="fz-title">Проверка по 230-ФЗ</div>
+      <div class="fz-sub">Настраивается в Pyrus</div>
+    </div>
+    <div style="width:1.5px;height:60px;background:rgba(6,182,212,0.25);flex-shrink:0;"></div>
+    <div class="fz-note">
+      Перед каждой коммуникацией система<br>
+      автоматически проверяет соответствие<br>
+      требованиям закона о взыскании долгов
+    </div>
+    <div class="fz-tags">
+      <div class="fz-tag">✅ Статус должника</div>
+      <div class="fz-tag">🚫 Ограничения на контакт</div>
+      <div class="fz-tag">⏰ Допустимые временны́е окна</div>
+      <div class="fz-tag">📋 Лимиты по каналам</div>
+      <div class="fz-tag">📄 Журнал коммуникаций</div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#ff6b00;"></div>1С · Данные</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f5a623;"></div>Pyrus · BPM</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f58200;"></div>Телефония</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#25D366;"></div>Мессенджеры</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#546e7a;"></div>Юр. сервисы</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9333ea;"></div>КадАрбитр · Федресурс</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div>Чат-боты</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ec4899;"></div>АвтоОбзвон</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#06b6d4;box-shadow:0 0 6px #06b6d4;"></div>230-ФЗ</div>
+  </div>
+
+</div>
+
+<script>
+// Load uploaded images from window.fs
+const imageMap = [
+  { id: 'img1c',      file: 'image_1.png'  },
+  { id: 'imgPyrus',   file: 'image_2.png'  },
+  { id: 'imgBot',     file: 'image_3.png'  },
+  { id: 'imgAsterisk',file: 'image_4.png'  },
+  { id: 'imgTg',      file: 'image_5.png'  },
+  { id: 'imgWa',      file: 'image_6.png'  },
+  { id: 'imgMax',     file: 'image_7.png'  },
+  { id: 'imgTL',      file: 'image_8.png'  },
+];
+
+async function loadImages() {
+  for (const { id, file } of imageMap) {
+    try {
+      const data = await window.fs.readFile(file);
+      const blob = new Blob([data]);
+      const url = URL.createObjectURL(blob);
+      const el = document.getElementById(id);
+      if (el) el.src = url;
+    } catch(e) {
+      console.warn('Could not load', file, e);
+    }
+  }
+}
+
+loadImages();
+</script>
+</body>
+</html>

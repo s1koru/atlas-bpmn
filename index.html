@@ -91,7 +91,6 @@
   .badge-row { display:flex; gap:4px; justify-content:center; margin-top:2px; flex-wrap:wrap; }
   .badge { font-size:9px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.08); border-radius:6px; padding:2px 6px; white-space:nowrap; }
 
-  /* 230-ФЗ */
   .fz-section {
     width:100%; margin-top:28px;
     background:linear-gradient(90deg,rgba(6,182,212,0.08),rgba(6,182,212,0.04));
@@ -111,7 +110,6 @@
   .legend-item { display:flex; align-items:center; gap:6px; color:rgba(255,255,255,0.5); font-size:11px; }
   .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
-  /* transfer label */
   .transfer-label {
     background:rgba(255,255,255,0.07);
     border:1px solid rgba(255,255,255,0.15);
@@ -129,9 +127,9 @@
   <h1>🔄 Архитектура процессов автоматизации</h1>
   <p class="subtitle">Схема интеграций и потоков данных</p>
 
-  <!-- 1С — сразу без старта -->
+  <!-- 1С -->
   <div class="node-box box-1c" style="width:auto;min-width:160px;padding:14px 32px;">
-    <img id="img1c" class="logo-img" src="" alt="1С"/>
+    <img id="img1c" class="logo-img" src="preview.png" alt="1С"/>
     <div class="node-title">1С</div>
     <div class="node-sub">Хранилище данных</div>
   </div>
@@ -140,7 +138,7 @@
 
   <!-- Бот для переноса данных -->
   <div class="transfer-label">
-    <img id="imgBot" src="" alt="Бот"/>
+    <img id="imgBot" src="preview (2).png" alt="Бот"/>
     <span>Бот для переноса данных</span>
   </div>
 
@@ -148,7 +146,7 @@
 
   <!-- Pyrus -->
   <div class="node-box box-pyrus" style="width:auto;min-width:160px;padding:14px 32px;">
-    <img id="imgPyrus" class="logo-img" src="" alt="Pyrus"/>
+    <img id="imgPyrus" class="logo-img" src="preview (1).png" alt="Pyrus"/>
     <div class="node-title">Pyrus</div>
     <div class="node-sub">BPM-платформа · Центр маршрутизации</div>
   </div>
@@ -176,7 +174,7 @@
     <!-- Asterisk -->
     <div class="out-col">
       <div class="node-box box-asterisk">
-        <img id="imgAsterisk" class="logo-img" src="" alt="Asterisk"/>
+        <img id="imgAsterisk" class="logo-img" src="preview (3).png" alt="Asterisk"/>
         <div class="node-title">Asterisk</div>
         <div class="node-sub">IP-телефония</div>
       </div>
@@ -186,9 +184,9 @@
     <div class="out-col">
       <div class="node-box box-msg">
         <div class="icon-row">
-          <img id="imgWa" src="" alt="WhatsApp"/>
-          <img id="imgTg" src="" alt="Telegram"/>
-          <img id="imgMax" src="" alt="Max"/>
+          <img id="imgWa"  src="preview (5).png" alt="WhatsApp"/>
+          <img id="imgTg"  src="preview (4).png" alt="Telegram"/>
+          <img id="imgMax" src="preview (6).png" alt="Max"/>
         </div>
         <div class="node-title">Мессенджеры</div>
         <div class="node-sub">WhatsApp · Telegram · Max</div>
@@ -207,7 +205,7 @@
     <!-- ТехЛегал -->
     <div class="out-col">
       <div class="node-box box-legal">
-        <img id="imgTL" class="logo-img" src="" alt="TechLegal" style="background:#fff;padding:2px;border-radius:6px;"/>
+        <img id="imgTL" class="logo-img" src="preview (7).png" alt="TechLegal" style="background:#fff;padding:2px;border-radius:6px;"/>
         <div class="node-title">ТехЛегал</div>
         <div class="node-sub">Правовой мониторинг</div>
       </div>
@@ -282,26 +280,5 @@
   </div>
 
 </div>
-
-
-<!-- Замени весь блок <script>...</script> в конце файла на это: -->
-<script>
-  // Маппинг id элемента -> имя файла в репозитории
-  const imageMap = [
-    { id: 'img1c',       src: 'preview.png'      },
-    { id: 'imgPyrus',    src: 'preview (1).png'  },
-    { id: 'imgBot',      src: 'preview (2).png'  },
-    { id: 'imgAsterisk', src: 'preview (3).png'  },
-    { id: 'imgTg',       src: 'preview (4).png'  },
-    { id: 'imgWa',       src: 'preview (5).png'  },
-    { id: 'imgMax',      src: 'preview (6).png'  },
-    { id: 'imgTL',       src: 'preview (7).png'  },
-  ];
-
-  for (const { id, src } of imageMap) {
-    const el = document.getElementById(id);
-    if (el) el.src = src;
-  }
-</script>
 </body>
 </html>
